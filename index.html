@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="gu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Radheeka - તાજી શાકભાજી</title>
+<style>
+body{font-family:Arial;margin:0;background:#f5fbf4;color:#17351c}
+header{background:#286b35;color:white;padding:25px;text-align:center}
+main{max-width:600px;margin:auto;padding:18px}
+.card{background:white;padding:18px;border-radius:16px;margin-bottom:15px}
+.item{padding:12px 0;border-bottom:1px solid #ddd}
+input,select{padding:10px;margin:5px;border:1px solid #aaa;border-radius:8px}
+button{width:100%;padding:16px;background:#25D366;color:white;border:0;border-radius:12px;font-size:18px;font-weight:bold}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>🌿 Radheeka</h1>
+<p>પ્રાકૃતિક ખેતી આધારિત તાજી શાકભાજી</p>
+</header>
+
+<main>
+
+<div class="card">
+<h2>🥬 આજની શાકભાજી</h2>
+<div id="items"></div>
+</div>
+
+<div class="card">
+<p><b>તમારું નામ</b></p>
+<input id="name" placeholder="નામ લખો">
+
+<p><b>સરનામું / વિસ્તાર</b></p>
+<input id="address" placeholder="Delivery location">
+
+<p><b>નોંધ</b></p>
+<input id="note" placeholder="કોઈ ખાસ સૂચના">
+</div>
+
+<button onclick="order()">📲 WhatsApp પર Order મોકલો</button>
+
+</main>
+
+<script>
+
+const veg=[
+"મેથી",
+"પાલક",
+"ભીંડા",
+"ચોળી",
+"દૂધી",
+"કારેલા",
+"કાકડી"
+];
+
+let box=document.getElementById("items");
+
+veg.forEach((v,i)=>{
+box.innerHTML+=`
+<div class="item">
+<b>${v}</b><br>
+<input id="q${i}" type="number" placeholder="Quantity">
+<select id="u${i}">
+<option>kg</option>
+<option>gm</option>
+<option>નંગ</option>
+<option>પુડી</option>
+</select>
+</div>`;
+});
+
+function order(){
+
+let list=[];
+
+veg.forEach((v,i)=>{
+let q=document.getElementById("q"+i).value;
+
+if(q){
+list.push("• "+v+": "+q+" "+document.getElementById("u"+i).value);
+}
+});
+
+if(list.length==0){
+alert("ઓછામાં ઓછી એક શાકભાજીની quantity લખો.");
+return;
+}
+
+let name=document.getElementById("name").value;
+let address=document.getElementById("address").value;
+let note=document.getElementById("note").value;
+
+let msg=
+"🌿 *Radheeka Vegetable Order* 🌿\n\n"+
+list.join("\n")+
+"\n\nનામ: "+name+
+"\nસરનામું: "+address+
+"\nનોંધ: "+note;
+
+window.location.href=
+"https://wa.me/918758884244?text="+encodeURIComponent(msg);
+
+}
+
+</script>
+</body>
+</html>
