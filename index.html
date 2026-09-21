@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-
 <title>Radheeka - તાજી શાકભાજી</title>
 
 <style>
@@ -50,7 +49,7 @@ main{
 
 .title{
   text-align:center;
-  font-size:25px;
+  font-size:24px;
   font-weight:800;
   margin-bottom:18px;
 }
@@ -79,6 +78,7 @@ main{
   font-size:18px;
   color:#23763a;
   font-weight:800;
+  white-space:nowrap;
 }
 
 .stock{
@@ -104,7 +104,7 @@ select{
 }
 
 .line-total{
-  min-width:85px;
+  min-width:75px;
   text-align:right;
   font-weight:800;
   color:#23763a;
@@ -137,9 +137,7 @@ select{
   padding:20px;
 }
 
-.error{
-  color:#c00000;
-}
+.error{color:#c00000}
 
 .summary{
   position:fixed;
@@ -184,10 +182,12 @@ button{
   border-radius:12px;
   font-size:17px;
   font-weight:bold;
+  cursor:pointer;
 }
 
 button:disabled{
   background:#aaa;
+  cursor:not-allowed;
 }
 
 .footer{
@@ -224,7 +224,6 @@ button:disabled{
 
 </div>
 
-
 <div class="section customer">
 
   <div class="title">
@@ -232,28 +231,15 @@ button:disabled{
   </div>
 
   <label>તમારું નામ</label>
-  <input
-    id="name"
-    type="text"
-    placeholder="નામ લખો"
-  >
+  <input id="name" type="text" placeholder="નામ લખો">
 
   <label>સરનામું / વિસ્તાર</label>
-  <input
-    id="address"
-    type="text"
-    placeholder="Delivery location"
-  >
+  <input id="address" type="text" placeholder="Delivery location">
 
   <label>નોંધ</label>
-  <input
-    id="note"
-    type="text"
-    placeholder="કોઈ ખાસ સૂચના"
-  >
+  <input id="note" type="text" placeholder="કોઈ ખાસ સૂચના">
 
 </div>
-
 
 <div class="footer">
 🌿 Fresh • Natural • Direct from Radheeka
@@ -261,9 +247,7 @@ button:disabled{
 
 </main>
 
-
 <div class="summary">
-
   <div class="summary-inner">
 
     <div class="total-box">
@@ -278,9 +262,7 @@ button:disabled{
     </button>
 
   </div>
-
 </div>
-
 
 <script type="module">
 
@@ -290,12 +272,15 @@ from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
 import {
   getDatabase,
   ref,
-  onValue
+  onValue,
+  runTransaction
 }
 from "https://www.gstatic.com/firebasejs/12.3.0/firebase-database.js";
 
 
-/* FIREBASE */
+/* =========================
+   FIREBASE CONFIG
+========================= */
 
 const firebaseConfig = {
 
@@ -319,12 +304,11 @@ const firebaseConfig = {
 
   appId:
   "1:562547454524:web:d961ccc00e736655220939"
-
 };
 
 
-const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
+const app=initializeApp(firebaseConfig);
+const database=getDatabase(app);
 
 let vegetables=[];
 
@@ -333,10 +317,11 @@ const totalBox=document.getElementById("total");
 const orderButton=document.getElementById("orderButton");
 
 
-/* DATABASE */
+/* =========================
+   LIVE DATABASE
+========================= */
 
 onValue(
-
   ref(database,"vegetables"),
 
   snapshot=>{
@@ -352,12 +337,10 @@ onValue(
       આજે શાકભાજી ઉપલબ્ધ નથી.
       </div>`;
 
-      orderButton.disabled=true;
       totalBox.textContent="0";
-
+      orderButton.disabled=true;
       return;
     }
-
 
     vegetables=
     Object.entries(data).map(([id,v])=>({
@@ -370,10 +353,8 @@ onValue(
 
     }));
 
-
     renderVegetables();
     orderButton.disabled=false;
-
   },
 
   error=>{
@@ -386,29 +367,27 @@ onValue(
     </div>`;
 
     orderButton.disabled=true;
-
   }
-
 );
 
 
-/* QUANTITY OPTIONS */
+/* =========================
+   QUANTITY OPTIONS
+========================= */
 
 function createOptions(veg){
 
-  let html=`<option value="0">Quantity પસંદ કરો</option>`;
+  let html=
+  `<option value="0">Quantity પસંદ કરો</option>`;
 
   const unit=
   String(veg.unit).toLowerCase();
 
-
-  /* KG ITEMS */
-
   if(unit==="kg"){
 
     const choices=[
-      {qty:0.25,label:"250 gm"},
-      {qty:0.50,label:"500 gm"},
+      {qty:.25,label:"250 gm"},
+      {qty:.50,label:"500 gm"},
       {qty:1,label:"1 kg"},
       {qty:1.5,label:"1.5 kg"},
       {qty:2,label:"2 kg"},
@@ -418,70 +397,49 @@ function createOptions(veg){
       {qty:5,label:"5 kg"}
     ];
 
-
     choices.forEach(c=>{
 
       if(c.qty<=veg.stock){
 
-        const amount=c.qty*veg.price;
-
         html+=
         `<option value="${c.qty}">
-        ${c.label} — ₹${formatMoney(amount)}
+        ${c.label} — ₹${formatMoney(c.qty*veg.price)}
         </option>`;
 
       }
-
     });
 
-  }
-
-
-  /* PUDI ITEMS */
-
-  else{
+  }else{
 
     const max=
-    Math.min(
-      Math.floor(veg.stock),
-      20
-    );
-
+    Math.min(Math.floor(veg.stock),20);
 
     for(let i=1;i<=max;i++){
 
-      const amount=
-      i*veg.price;
-
       html+=
       `<option value="${i}">
-      ${i} ${veg.unit} — ₹${formatMoney(amount)}
+      ${i} ${veg.unit} — ₹${formatMoney(i*veg.price)}
       </option>`;
 
     }
-
   }
 
-
   return html;
-
 }
 
 
-/* DISPLAY */
+/* =========================
+   SHOW VEGETABLES
+========================= */
 
 function renderVegetables(){
 
   items.innerHTML="";
 
-
   vegetables.forEach((veg,index)=>{
 
-    const card=
-    document.createElement("div");
-
+    const card=document.createElement("div");
     card.className="veg-card";
-
 
     if(veg.stock<=0){
 
@@ -490,13 +448,8 @@ function renderVegetables(){
       <div class="veg-top">
 
         <div>
-          <div class="veg-name">
-            ${veg.name}
-          </div>
-
-          <div class="stock">
-            હાલમાં ઉપલબ્ધ નથી
-          </div>
+          <div class="veg-name">${veg.name}</div>
+          <div class="stock">હાલમાં ઉપલબ્ધ નથી</div>
         </div>
 
         <div class="price">
@@ -505,30 +458,21 @@ function renderVegetables(){
 
       </div>
 
-      <div class="out">
-        OUT OF STOCK
-      </div>
-
+      <div class="out">OUT OF STOCK</div>
       `;
 
-    }
-
-    else{
+    }else{
 
       card.innerHTML=`
 
       <div class="veg-top">
 
         <div>
-
-          <div class="veg-name">
-            ${veg.name}
-          </div>
+          <div class="veg-name">${veg.name}</div>
 
           <div class="stock">
             ઉપલબ્ધ: ${veg.stock} ${veg.unit}
           </div>
-
         </div>
 
         <div class="price">
@@ -537,35 +481,27 @@ function renderVegetables(){
 
       </div>
 
-
       <div class="controls">
 
         <select
           id="q${index}"
-          data-index="${index}"
-        >
+          data-index="${index}">
 
           ${createOptions(veg)}
 
         </select>
 
-
         <div
           class="line-total"
-          id="line${index}"
-        >
+          id="line${index}">
           ₹0
         </div>
 
       </div>
-
       `;
-
     }
 
-
     items.appendChild(card);
-
   });
 
 
@@ -580,18 +516,17 @@ function renderVegetables(){
 
   });
 
-
   calculateTotal();
-
 }
 
 
-/* TOTAL */
+/* =========================
+   TOTAL
+========================= */
 
 function calculateTotal(){
 
   let total=0;
-
 
   vegetables.forEach((veg,index)=>{
 
@@ -601,40 +536,24 @@ function calculateTotal(){
     const line=
     document.getElementById("line"+index);
 
+    if(!select)return;
 
-    if(!select){
-      return;
-    }
-
-
-    const qty=
-    Number(select.value)||0;
-
-
-    const amount=
-    qty*veg.price;
-
+    const qty=Number(select.value)||0;
+    const amount=qty*veg.price;
 
     total+=amount;
 
-
     if(line){
-
       line.textContent=
       "₹"+formatMoney(amount);
-
     }
 
   });
 
-
   totalBox.textContent=
   formatMoney(total);
-
 }
 
-
-/* MONEY */
 
 function formatMoney(value){
 
@@ -645,91 +564,53 @@ function formatMoney(value){
   }
 
   return n.toFixed(2);
-
 }
 
-
-/* DISPLAY QUANTITY */
 
 function quantityLabel(veg,qty){
 
-  const unit=
-  String(veg.unit).toLowerCase();
+  if(String(veg.unit).toLowerCase()==="kg"){
 
-
-  if(unit==="kg"){
-
-    if(qty===0.25){
-      return "250 gm";
-    }
-
-    if(qty===0.5){
-      return "500 gm";
-    }
+    if(qty===0.25)return "250 gm";
+    if(qty===0.5)return "500 gm";
 
     return qty+" kg";
-
   }
 
-
   return qty+" "+veg.unit;
-
 }
 
 
-/* ORDER */
+/* =========================
+   FINAL ORDER
+   + AUTOMATIC STOCK MINUS
+========================= */
 
-function placeOrder(){
+async function placeOrder(){
 
-  let orderLines=[];
-  let grandTotal=0;
-
+  const selected=[];
 
   vegetables.forEach((veg,index)=>{
 
     const select=
     document.getElementById("q"+index);
 
+    if(!select)return;
 
-    if(!select){
-      return;
-    }
-
-
-    const qty=
-    Number(select.value)||0;
-
+    const qty=Number(select.value)||0;
 
     if(qty>0){
 
-      const amount=
-      qty*veg.price;
-
-
-      grandTotal+=amount;
-
-
-      orderLines.push(
-
-        "• "+
-        veg.name+
-        " - "+
-        quantityLabel(veg,qty)+
-        " × ₹"+
-        veg.price+
-        "/"+
-        veg.unit+
-        " = ₹"+
-        formatMoney(amount)
-
-      );
+      selected.push({
+        ...veg,
+        qty:qty
+      });
 
     }
-
   });
 
 
-  if(orderLines.length===0){
+  if(selected.length===0){
 
     alert(
       "ઓછામાં ઓછી એક શાકભાજીની Quantity પસંદ કરો."
@@ -740,77 +621,167 @@ function placeOrder(){
 
 
   const name=
-  document
-  .getElementById("name")
-  .value
-  .trim();
-
+  document.getElementById("name").value.trim();
 
   const address=
-  document
-  .getElementById("address")
-  .value
-  .trim();
-
+  document.getElementById("address").value.trim();
 
   const note=
-  document
-  .getElementById("note")
-  .value
-  .trim();
+  document.getElementById("note").value.trim();
 
 
   if(!name){
 
-    alert(
-      "કૃપા કરીને તમારું નામ લખો."
-    );
-
+    alert("કૃપા કરીને તમારું નામ લખો.");
     return;
   }
 
 
   if(!address){
 
-    alert(
-      "કૃપા કરીને સરનામું / વિસ્તાર લખો."
-    );
-
+    alert("કૃપા કરીને સરનામું / વિસ્તાર લખો.");
     return;
   }
 
 
-  const message=
-
-  "🌿 *Radheeka Vegetable Order* 🌿\n\n"+
-
-  orderLines.join("\n")+
-
-  "\n\n💰 *કુલ રકમ: ₹"+
-  formatMoney(grandTotal)+
-  "*"+
-
-  "\n\n👤 નામ: "+
-  name+
-
-  "\n📍 સરનામું: "+
-  address+
-
-  "\n📝 નોંધ: "+
-  (note || "-");
+  orderButton.disabled=true;
+  orderButton.textContent="Order તૈયાર થઈ રહ્યો છે...";
 
 
-  const whatsappNumber=
-  "918758884244";
+  const completed=[];
 
 
-  window.location.href=
+  try{
 
-  "https://wa.me/"+
-  whatsappNumber+
-  "?text="+
-  encodeURIComponent(message);
+    /* STOCK MINUS */
 
+    for(const veg of selected){
+
+      const stockRef=
+      ref(
+        database,
+        "vegetables/"+veg.id+"/stock"
+      );
+
+
+      const result=
+      await runTransaction(
+
+        stockRef,
+
+        currentStock=>{
+
+          const stock=
+          Number(currentStock)||0;
+
+          if(stock < veg.qty){
+            return;
+          }
+
+          return Number(
+            (stock-veg.qty).toFixed(2)
+          );
+        }
+
+      );
+
+
+      if(!result.committed){
+
+        throw new Error(
+          veg.name+
+          " માટે પૂરતો stock ઉપલબ્ધ નથી."
+        );
+      }
+
+
+      completed.push(veg);
+    }
+
+
+    /* WHATSAPP MESSAGE */
+
+    let orderLines=[];
+    let grandTotal=0;
+
+
+    completed.forEach(veg=>{
+
+      const amount=
+      veg.qty*veg.price;
+
+      grandTotal+=amount;
+
+
+      orderLines.push(
+
+        "• "+
+        veg.name+
+        " - "+
+        quantityLabel(veg,veg.qty)+
+        " × ₹"+
+        veg.price+
+        "/"+
+        veg.unit+
+        " = ₹"+
+        formatMoney(amount)
+
+      );
+
+    });
+
+
+    const message=
+
+    "🌿 *Radheeka Vegetable Order* 🌿\n\n"+
+
+    orderLines.join("\n")+
+
+    "\n\n💰 *કુલ રકમ: ₹"+
+    formatMoney(grandTotal)+
+    "*"+
+
+    "\n\n👤 નામ: "+
+    name+
+
+    "\n📍 સરનામું: "+
+    address+
+
+    "\n📝 નોંધ: "+
+    (note || "-");
+
+
+    const whatsappNumber=
+    "918758884244";
+
+
+    const whatsappURL=
+
+    "https://wa.me/"+
+    whatsappNumber+
+    "?text="+
+    encodeURIComponent(message);
+
+
+    window.location.href=
+    whatsappURL;
+
+  }
+
+  catch(error){
+
+    console.error(error);
+
+    alert(
+      error.message ||
+      "Order કરવામાં સમસ્યા આવી. ફરી પ્રયત્ન કરો."
+    );
+
+    orderButton.disabled=false;
+
+    orderButton.textContent=
+    "📲 WhatsApp Order";
+  }
 }
 
 
