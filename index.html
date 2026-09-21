@@ -1,78 +1,507 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="gu">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Radheeka - તાજી શાકભાજી</title>
 
 <style>
 body{
-  font-family:Arial,sans-serif;
-  margin:0;
-  background:#f5fbf4;
-  color:#17351c;
+    font-family:Arial,sans-serif;
+    margin:0;
+    background:#f5fbf4;
+    color:#17351c;
 }
 
 header{
-  background:#286b35;
-  color:white;
-  padding:25px 15px;
-  text-align:center;
+    background:#286b35;
+    color:white;
+    padding:25px 15px;
+    text-align:center;
+}
+
+header h1{
+    margin:0 0 8px;
+}
+
+header p{
+    margin:0;
 }
 
 main{
-  max-width:600px;
-  margin:auto;
-  padding:18px;
+    max-width:600px;
+    margin:auto;
+    padding:18px;
 }
 
 .card{
-  background:white;
-  padding:18px;
-  border-radius:16px;
-  margin-bottom:15px;
-  box-shadow:0 2px 8px #ddd;
+    background:white;
+    padding:18px;
+    border-radius:16px;
+    margin-bottom:15px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
 }
 
 .item{
-  padding:15px 0;
-  border-bottom:1px solid #ddd;
+    padding:15px 0;
+    border-bottom:1px solid #ddd;
+}
+
+.item:last-child{
+    border-bottom:none;
+}
+
+.veg-name{
+    font-size:18px;
+    font-weight:bold;
 }
 
 .price{
-  color:#286b35;
-  font-weight:bold;
-  margin-top:5px;
+    color:#286b35;
+    font-weight:bold;
+    margin-top:6px;
 }
 
 .stock{
-  font-size:14px;
-  margin-top:4px;
-}
-
-input{
-  width:90%;
-  padding:11px;
-  margin-top:8px;
-  border:1px solid #aaa;
-  border-radius:8px;
-  font-size:16px;
+    font-size:14px;
+    margin-top:5px;
 }
 
 .qty{
-  width:110px;
+    width:120px;
+    padding:10px;
+    margin-top:10px;
+    border:1px solid #aaa;
+    border-radius:8px;
+    font-size:16px;
+}
+
+.customer-input{
+    box-sizing:border-box;
+    width:100%;
+    padding:12px;
+    margin-top:6px;
+    margin-bottom:12px;
+    border:1px solid #aaa;
+    border-radius:8px;
+    font-size:16px;
 }
 
 .total{
-  font-size:22px;
-  font-weight:bold;
-  text-align:center;
-  color:#286b35;
+    text-align:center;
+    font-size:22px;
+    font-weight:bold;
+    color:#286b35;
 }
 
-button{
-  width:100%;
-  padding:16px;
-  background:#25D366;
-  color
+.order-btn{
+    width:100%;
+    padding:16px;
+    background:#25D366;
+    color:white;
+    border:none;
+    border-radius:12px;
+    font-size:18px;
+    font-weight:bold;
+}
+
+.out{
+    color:#d00000;
+    font-weight:bold;
+    margin-top:6px;
+}
+
+.footer{
+    text-align:center;
+    margin-top:15px;
+    font-size:13px;
+    color:#666;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🌿 Radheeka</h1>
+    <p>પ્રાકૃતિક ખેતી આધારિત તાજી શાકભાજી</p>
+</header>
+
+<main>
+
+<div class="card">
+    <h2>🥬 આજની તાજી શાકભાજી</h2>
+    <div id="items"></div>
+</div>
+
+<div class="card total">
+    કુલ રકમ: ₹<span id="total">0</span>
+</div>
+
+<div class="card">
+
+    <label><b>તમારું નામ</b></label>
+    <input
+        class="customer-input"
+        id="name"
+        type="text"
+        placeholder="નામ લખો"
+    >
+
+    <label><b>સરનામું / વિસ્તાર</b></label>
+    <input
+        class="customer-input"
+        id="address"
+        type="text"
+        placeholder="Delivery location"
+    >
+
+    <label><b>નોંધ</b></label>
+    <input
+        class="customer-input"
+        id="note"
+        type="text"
+        placeholder="કોઈ ખાસ સૂચના"
+    >
+
+</div>
+
+<button class="order-btn" onclick="sendOrder()">
+    📲 WhatsApp પર Order મોકલો
+</button>
+
+<div class="footer">
+    🌿 Fresh • Natural • Direct from Radheeka
+</div>
+
+</main>
+
+
+<script>
+
+/*
+==========================================
+🌿 રોજ ફક્ત આ ભાગ બદલવાનો છે 🌿
+
+name  = શાકભાજી
+price = ભાવ
+stock = આજનો Stock
+unit  = kg અથવા પુડી
+==========================================
+*/
+
+const vegetables = [
+
+    {
+        name:"મેથી",
+        price:20,
+        stock:15,
+        unit:"પુડી"
+    },
+
+    {
+        name:"પાલક",
+        price:20,
+        stock:12,
+        unit:"પુડી"
+    },
+
+    {
+        name:"ભીંડા",
+        price:120,
+        stock:5,
+        unit:"kg"
+    },
+
+    {
+        name:"ચોળી",
+        price:120,
+        stock:4,
+        unit:"kg"
+    },
+
+    {
+        name:"દૂધી",
+        price:60,
+        stock:8,
+        unit:"kg"
+    },
+
+    {
+        name:"કારેલા",
+        price:120,
+        stock:3,
+        unit:"kg"
+    },
+
+    {
+        name:"કાકડી",
+        price:80,
+        stock:6,
+        unit:"kg"
+    }
+
+];
+
+
+/*
+==========================================
+⛔ અહીંથી નીચે રોજ કંઈ બદલવાનું નથી
+==========================================
+*/
+
+const items = document.getElementById("items");
+
+
+vegetables.forEach(function(veg,index){
+
+    const div = document.createElement("div");
+
+    div.className = "item";
+
+
+    if(veg.stock <= 0){
+
+        div.innerHTML =
+            '<div class="veg-name">' +
+            veg.name +
+            '</div>' +
+
+            '<div class="price">₹' +
+            veg.price +
+            ' / ' +
+            veg.unit +
+            '</div>' +
+
+            '<div class="out">Out of Stock</div>';
+
+    }
+
+    else{
+
+        let step = 1;
+
+        if(veg.unit === "kg"){
+            step = 0.25;
+        }
+
+
+        div.innerHTML =
+            '<div class="veg-name">' +
+            veg.name +
+            '</div>' +
+
+            '<div class="price">₹' +
+            veg.price +
+            ' / ' +
+            veg.unit +
+            '</div>' +
+
+            '<div class="stock">Available Stock: ' +
+            veg.stock +
+            ' ' +
+            veg.unit +
+            '</div>' +
+
+            '<input class="qty" ' +
+            'id="qty' + index + '" ' +
+            'type="number" ' +
+            'min="0" ' +
+            'max="' + veg.stock + '" ' +
+            'step="' + step + '" ' +
+            'placeholder="Quantity" ' +
+            'oninput="calculateTotal()"> ' +
+
+            veg.unit;
+
+    }
+
+
+    items.appendChild(div);
+
+});
+
+
+function calculateTotal(){
+
+    let total = 0;
+
+
+    vegetables.forEach(function(veg,index){
+
+        const input =
+            document.getElementById("qty" + index);
+
+
+        if(input){
+
+            let quantity =
+                parseFloat(input.value);
+
+
+            if(isNaN(quantity)){
+                quantity = 0;
+            }
+
+
+            if(quantity > veg.stock){
+
+                quantity = veg.stock;
+
+                input.value = veg.stock;
+
+                alert(
+                    veg.name +
+                    " નો Stock માત્ર " +
+                    veg.stock +
+                    " " +
+                    veg.unit +
+                    " ઉપલબ્ધ છે."
+                );
+
+            }
+
+
+            if(quantity < 0){
+
+                quantity = 0;
+
+                input.value = "";
+
+            }
+
+
+            total += quantity * veg.price;
+
+        }
+
+    });
+
+
+    document.getElementById("total").innerText =
+        Math.round(total);
+
+}
+
+
+function sendOrder(){
+
+    let orderItems = [];
+
+    let total = 0;
+
+
+    vegetables.forEach(function(veg,index){
+
+        const input =
+            document.getElementById("qty" + index);
+
+
+        if(input){
+
+            let quantity =
+                parseFloat(input.value);
+
+
+            if(!isNaN(quantity) && quantity > 0){
+
+
+                if(quantity > veg.stock){
+
+                    quantity = veg.stock;
+
+                    input.value = veg.stock;
+
+                }
+
+
+                const amount =
+                    quantity * veg.price;
+
+
+                total += amount;
+
+
+                orderItems.push(
+                    "• " +
+                    veg.name +
+                    " - " +
+                    quantity +
+                    " " +
+                    veg.unit +
+                    " × ₹" +
+                    veg.price +
+                    " = ₹" +
+                    Math.round(amount)
+                );
+
+            }
+
+        }
+
+    });
+
+
+    if(orderItems.length === 0){
+
+        alert(
+            "ઓછામાં ઓછી એક શાકભાજીની Quantity લખો."
+        );
+
+        return;
+
+    }
+
+
+    const customerName =
+        document.getElementById("name").value.trim();
+
+
+    const address =
+        document.getElementById("address").value.trim();
+
+
+    const note =
+        document.getElementById("note").value.trim();
+
+
+    const message =
+        "🌿 *Radheeka Vegetable Order* 🌿\n\n" +
+
+        orderItems.join("\n") +
+
+        "\n\n💰 *કુલ રકમ: ₹" +
+        Math.round(total) +
+        "*" +
+
+        "\n\n👤 નામ: " +
+        customerName +
+
+        "\n📍 સરનામું: " +
+        address +
+
+        "\n📝 નોંધ: " +
+        note;
+
+
+    const whatsappNumber =
+        "918758884244";
+
+
+    const whatsappLink =
+        "https://wa.me/" +
+        whatsappNumber +
+        "?text=" +
+        encodeURIComponent(message);
+
+
+    window.location.href =
+        whatsappLink;
+
+}
+
+</script>
+
+</body>
+</html>
