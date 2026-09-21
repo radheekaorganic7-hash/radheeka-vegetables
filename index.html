@@ -2,37 +2,36 @@
 <html lang="gu">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
 <title>Radheeka - તાજી શાકભાજી</title>
 
 <style>
-*{
-  box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 body{
-  font-family:Arial,sans-serif;
   margin:0;
-  background:#f5fbf4;
-  color:#17351c;
+  font-family:Arial,sans-serif;
+  background:#f3f9f2;
+  color:#183c23;
+  padding-bottom:115px;
 }
 
 header{
-  background:#286b35;
+  background:linear-gradient(135deg,#1f6b35,#318348);
   color:white;
-  padding:30px 15px;
   text-align:center;
+  padding:30px 15px 27px;
 }
 
-header h1{
-  margin:0;
+.logo{
   font-size:38px;
+  font-weight:800;
 }
 
-header p{
-  margin:10px 0 0;
-  font-size:18px;
+.tagline{
+  margin-top:8px;
+  font-size:17px;
 }
 
 main{
@@ -41,111 +40,161 @@ main{
   padding:18px;
 }
 
-.card{
+.section{
   background:white;
+  border-radius:20px;
   padding:20px;
-  border-radius:18px;
   margin-bottom:16px;
-  box-shadow:0 3px 12px rgba(0,0,0,.08);
+  box-shadow:0 4px 16px rgba(0,0,0,.07);
 }
 
-h2{
-  margin-top:0;
+.title{
+  text-align:center;
+  font-size:25px;
+  font-weight:800;
+  margin-bottom:18px;
 }
 
-.item{
-  padding:15px 0;
-  border-bottom:1px solid #ddd;
+.veg-card{
+  border:1px solid #e1ebe2;
+  border-radius:16px;
+  padding:16px;
+  margin-bottom:13px;
+  background:#fcfffc;
 }
 
-.item:last-child{
-  border-bottom:none;
+.veg-top{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:flex-start;
 }
 
 .veg-name{
-  font-size:20px;
-  font-weight:bold;
+  font-size:21px;
+  font-weight:800;
 }
 
 .price{
-  color:#286b35;
   font-size:18px;
-  font-weight:bold;
-  margin-top:6px;
+  color:#23763a;
+  font-weight:800;
 }
 
 .stock{
   margin-top:5px;
   font-size:14px;
-  color:#555;
-}
-
-.out{
-  color:#d00000;
-  font-weight:bold;
-  margin-top:7px;
-}
-
-.qty{
-  width:130px;
-  padding:11px;
-  margin-top:10px;
-  border:1px solid #aaa;
-  border-radius:8px;
-  font-size:16px;
-}
-
-.customer-input{
-  width:100%;
-  padding:13px;
-  margin-top:7px;
-  margin-bottom:12px;
-  border:1px solid #aaa;
-  border-radius:9px;
-  font-size:16px;
-}
-
-.total{
-  text-align:center;
-  font-size:24px;
-  font-weight:bold;
-  color:#286b35;
-}
-
-.loading{
-  text-align:center;
-  padding:20px;
   color:#666;
 }
 
-.error{
-  text-align:center;
-  padding:15px;
-  color:#c00000;
+.controls{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  margin-top:13px;
+}
+
+select{
+  flex:1;
+  padding:12px;
+  border:1px solid #b9c8bb;
+  border-radius:10px;
+  font-size:16px;
+  background:white;
+}
+
+.line-total{
+  min-width:85px;
+  text-align:right;
+  font-weight:800;
+  color:#23763a;
+  font-size:17px;
+}
+
+.out{
+  margin-top:10px;
+  color:#d00000;
   font-weight:bold;
+}
+
+.customer label{
+  display:block;
+  margin-top:12px;
+  margin-bottom:6px;
+  font-weight:bold;
+}
+
+.customer input{
+  width:100%;
+  padding:13px;
+  border:1px solid #aaa;
+  border-radius:10px;
+  font-size:16px;
+}
+
+.loading,.error{
+  text-align:center;
+  padding:20px;
+}
+
+.error{
+  color:#c00000;
+}
+
+.summary{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:white;
+  padding:10px 14px 12px;
+  box-shadow:0 -3px 15px rgba(0,0,0,.12);
+  z-index:100;
+}
+
+.summary-inner{
+  max-width:650px;
+  margin:auto;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.total-box{
+  min-width:105px;
+}
+
+.total-label{
+  font-size:12px;
+  color:#666;
+}
+
+.total-price{
+  font-size:22px;
+  color:#23763a;
+  font-weight:800;
 }
 
 button{
-  width:100%;
-  padding:17px;
+  flex:1;
+  border:0;
   background:#25D366;
   color:white;
-  border:0;
-  border-radius:13px;
-  font-size:19px;
+  padding:15px 10px;
+  border-radius:12px;
+  font-size:17px;
   font-weight:bold;
-  cursor:pointer;
 }
 
 button:disabled{
-  background:#999;
-  cursor:not-allowed;
+  background:#aaa;
 }
 
 .footer{
   text-align:center;
-  color:#666;
-  padding:15px 5px;
+  color:#6b756c;
+  padding:5px 5px 20px;
+  font-size:14px;
 }
 </style>
 </head>
@@ -153,49 +202,51 @@ button:disabled{
 <body>
 
 <header>
-  <h1>🌿 Radheeka</h1>
-  <p>પ્રાકૃતિક ખેતી આધારિત તાજી શાકભાજી</p>
+  <div class="logo">🌿 Radheeka</div>
+  <div class="tagline">
+    પ્રાકૃતિક ખેતી આધારિત તાજી શાકભાજી
+  </div>
 </header>
 
 <main>
 
-<div class="card">
-  <h2>🥬 આજની તાજી શાકભાજી</h2>
+<div class="section">
+
+  <div class="title">
+    🥬 આજની તાજી શાકભાજી
+  </div>
 
   <div id="items">
     <div class="loading">
       શાકભાજીની માહિતી લોડ થઈ રહી છે...
     </div>
   </div>
+
 </div>
 
 
-<div class="card total">
-  કુલ રકમ: ₹<span id="total">0</span>
-</div>
+<div class="section customer">
 
+  <div class="title">
+    🛒 Delivery Details
+  </div>
 
-<div class="card">
-
-  <p><b>તમારું નામ</b></p>
+  <label>તમારું નામ</label>
   <input
-    class="customer-input"
     id="name"
     type="text"
     placeholder="નામ લખો"
   >
 
-  <p><b>સરનામું / વિસ્તાર</b></p>
+  <label>સરનામું / વિસ્તાર</label>
   <input
-    class="customer-input"
     id="address"
     type="text"
     placeholder="Delivery location"
   >
 
-  <p><b>નોંધ</b></p>
+  <label>નોંધ</label>
   <input
-    class="customer-input"
     id="note"
     type="text"
     placeholder="કોઈ ખાસ સૂચના"
@@ -204,23 +255,34 @@ button:disabled{
 </div>
 
 
-<button id="orderButton" disabled>
-  📲 WhatsApp પર Order મોકલો
-</button>
-
-
 <div class="footer">
-  🌿 Fresh • Natural • Direct from Radheeka
+🌿 Fresh • Natural • Direct from Radheeka
 </div>
 
 </main>
 
 
-<script type="module">
+<div class="summary">
 
-/* =========================================
-   FIREBASE IMPORT
-========================================= */
+  <div class="summary-inner">
+
+    <div class="total-box">
+      <div class="total-label">કુલ રકમ</div>
+      <div class="total-price">
+        ₹<span id="total">0</span>
+      </div>
+    </div>
+
+    <button id="orderButton" disabled>
+      📲 WhatsApp Order
+    </button>
+
+  </div>
+
+</div>
+
+
+<script type="module">
 
 import { initializeApp }
 from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
@@ -233,9 +295,7 @@ import {
 from "https://www.gstatic.com/firebasejs/12.3.0/firebase-database.js";
 
 
-/* =========================================
-   RADHEEKA FIREBASE CONFIG
-========================================= */
+/* FIREBASE */
 
 const firebaseConfig = {
 
@@ -263,138 +323,191 @@ const firebaseConfig = {
 };
 
 
-/* =========================================
-   START FIREBASE
-========================================= */
-
 const app = initializeApp(firebaseConfig);
-
 const database = getDatabase(app);
 
+let vegetables=[];
 
-/* =========================================
-   ELEMENTS
-========================================= */
-
-let vegetables = [];
-
-const items =
-document.getElementById("items");
-
-const totalBox =
-document.getElementById("total");
-
-const orderButton =
-document.getElementById("orderButton");
+const items=document.getElementById("items");
+const totalBox=document.getElementById("total");
+const orderButton=document.getElementById("orderButton");
 
 
-/* =========================================
-   GET VEGETABLES FROM DATABASE
-========================================= */
-
-const vegetablesRef =
-ref(database,"vegetables");
-
+/* DATABASE */
 
 onValue(
 
-  vegetablesRef,
+  ref(database,"vegetables"),
 
-  (snapshot)=>{
+  snapshot=>{
 
-    const data = snapshot.val();
+    const data=snapshot.val();
 
     if(!data){
 
-      vegetables = [];
+      vegetables=[];
 
-      items.innerHTML =
+      items.innerHTML=
       `<div class="loading">
       આજે શાકભાજી ઉપલબ્ધ નથી.
       </div>`;
 
-      totalBox.textContent = "0";
-
-      orderButton.disabled = true;
+      orderButton.disabled=true;
+      totalBox.textContent="0";
 
       return;
     }
 
 
-    vegetables =
-    Object.entries(data).map(([id,value])=>({
+    vegetables=
+    Object.entries(data).map(([id,v])=>({
 
       id:id,
-
-      name:
-      value.name || "શાકભાજી",
-
-      price:
-      Number(value.price) || 0,
-
-      stock:
-      Number(value.stock) || 0,
-
-      unit:
-      value.unit || "kg"
+      name:v.name || "શાકભાજી",
+      price:Number(v.price)||0,
+      stock:Number(v.stock)||0,
+      unit:v.unit || "kg"
 
     }));
 
 
     renderVegetables();
-
-    orderButton.disabled = false;
+    orderButton.disabled=false;
 
   },
 
-  (error)=>{
+  error=>{
 
     console.error(error);
 
-    items.innerHTML =
+    items.innerHTML=
     `<div class="error">
     Database સાથે connection થઈ શક્યું નથી.
     </div>`;
 
-    orderButton.disabled = true;
+    orderButton.disabled=true;
 
   }
 
 );
 
 
-/* =========================================
-   SHOW VEGETABLES
-========================================= */
+/* QUANTITY OPTIONS */
+
+function createOptions(veg){
+
+  let html=`<option value="0">Quantity પસંદ કરો</option>`;
+
+  const unit=
+  String(veg.unit).toLowerCase();
+
+
+  /* KG ITEMS */
+
+  if(unit==="kg"){
+
+    const choices=[
+      {qty:0.25,label:"250 gm"},
+      {qty:0.50,label:"500 gm"},
+      {qty:1,label:"1 kg"},
+      {qty:1.5,label:"1.5 kg"},
+      {qty:2,label:"2 kg"},
+      {qty:2.5,label:"2.5 kg"},
+      {qty:3,label:"3 kg"},
+      {qty:4,label:"4 kg"},
+      {qty:5,label:"5 kg"}
+    ];
+
+
+    choices.forEach(c=>{
+
+      if(c.qty<=veg.stock){
+
+        const amount=c.qty*veg.price;
+
+        html+=
+        `<option value="${c.qty}">
+        ${c.label} — ₹${formatMoney(amount)}
+        </option>`;
+
+      }
+
+    });
+
+  }
+
+
+  /* PUDI ITEMS */
+
+  else{
+
+    const max=
+    Math.min(
+      Math.floor(veg.stock),
+      20
+    );
+
+
+    for(let i=1;i<=max;i++){
+
+      const amount=
+      i*veg.price;
+
+      html+=
+      `<option value="${i}">
+      ${i} ${veg.unit} — ₹${formatMoney(amount)}
+      </option>`;
+
+    }
+
+  }
+
+
+  return html;
+
+}
+
+
+/* DISPLAY */
 
 function renderVegetables(){
 
-  items.innerHTML = "";
+  items.innerHTML="";
 
 
   vegetables.forEach((veg,index)=>{
 
-    const div =
+    const card=
     document.createElement("div");
 
-    div.className = "item";
+    card.className="veg-card";
 
 
-    if(veg.stock <= 0){
+    if(veg.stock<=0){
 
-      div.innerHTML = `
+      card.innerHTML=`
 
-        <div class="veg-name">
-          ${veg.name}
+      <div class="veg-top">
+
+        <div>
+          <div class="veg-name">
+            ${veg.name}
+          </div>
+
+          <div class="stock">
+            હાલમાં ઉપલબ્ધ નથી
+          </div>
         </div>
 
         <div class="price">
-          ₹${veg.price} / ${veg.unit}
+          ₹${veg.price}/${veg.unit}
         </div>
 
-        <div class="out">
-          OUT OF STOCK
-        </div>
+      </div>
+
+      <div class="out">
+        OUT OF STOCK
+      </div>
 
       `;
 
@@ -402,54 +515,66 @@ function renderVegetables(){
 
     else{
 
-      const step =
-      veg.unit.toLowerCase() === "kg"
-      ? "0.25"
-      : "1";
+      card.innerHTML=`
 
+      <div class="veg-top">
 
-      div.innerHTML = `
+        <div>
 
-        <div class="veg-name">
-          ${veg.name}
+          <div class="veg-name">
+            ${veg.name}
+          </div>
+
+          <div class="stock">
+            ઉપલબ્ધ: ${veg.stock} ${veg.unit}
+          </div>
+
         </div>
 
         <div class="price">
-          ₹${veg.price} / ${veg.unit}
+          ₹${veg.price}/${veg.unit}
         </div>
 
-        <div class="stock">
-          ઉપલબ્ધ: ${veg.stock} ${veg.unit}
-        </div>
+      </div>
 
-        <input
-          class="qty"
+
+      <div class="controls">
+
+        <select
           id="q${index}"
-          type="number"
-          min="0"
-          max="${veg.stock}"
-          step="${step}"
-          placeholder="Quantity"
+          data-index="${index}"
         >
 
-        ${veg.unit}
+          ${createOptions(veg)}
+
+        </select>
+
+
+        <div
+          class="line-total"
+          id="line${index}"
+        >
+          ₹0
+        </div>
+
+      </div>
 
       `;
 
     }
 
 
-    items.appendChild(div);
+    items.appendChild(card);
 
   });
 
 
   document
-  .querySelectorAll(".qty")
-  .forEach(input=>{
+  .querySelectorAll("select[data-index]")
+  .forEach(select=>{
 
-    input.addEventListener(
-      "input",
+    select.addEventListener(
+      "change",
       calculateTotal
     );
 
@@ -461,142 +586,140 @@ function renderVegetables(){
 }
 
 
-/* =========================================
-   CALCULATE TOTAL
-========================================= */
+/* TOTAL */
 
 function calculateTotal(){
 
-  let total = 0;
+  let total=0;
 
 
   vegetables.forEach((veg,index)=>{
 
-    const input =
+    const select=
     document.getElementById("q"+index);
 
+    const line=
+    document.getElementById("line"+index);
 
-    if(!input){
+
+    if(!select){
       return;
     }
 
 
-    let quantity =
-    parseFloat(input.value) || 0;
+    const qty=
+    Number(select.value)||0;
 
 
-    if(quantity < 0){
-
-      quantity = 0;
-
-      input.value = "";
-
-    }
+    const amount=
+    qty*veg.price;
 
 
-    if(quantity > veg.stock){
+    total+=amount;
 
-      quantity = veg.stock;
 
-      input.value = veg.stock;
+    if(line){
 
-      alert(
-        veg.name +
-        " નો ઉપલબ્ધ Stock માત્ર " +
-        veg.stock +
-        " " +
-        veg.unit +
-        " છે."
-      );
+      line.textContent=
+      "₹"+formatMoney(amount);
 
     }
-
-
-    total +=
-    quantity * veg.price;
 
   });
 
 
-  totalBox.textContent =
+  totalBox.textContent=
   formatMoney(total);
 
 }
 
 
-/* =========================================
-   MONEY FORMAT
-========================================= */
+/* MONEY */
 
 function formatMoney(value){
 
-  const number =
-  Number(value) || 0;
+  const n=Number(value)||0;
 
-  if(Number.isInteger(number)){
-    return number;
+  if(Number.isInteger(n)){
+    return n;
   }
 
-  return number.toFixed(2);
+  return n.toFixed(2);
 
 }
 
 
-/* =========================================
-   WHATSAPP ORDER
-========================================= */
+/* DISPLAY QUANTITY */
+
+function quantityLabel(veg,qty){
+
+  const unit=
+  String(veg.unit).toLowerCase();
+
+
+  if(unit==="kg"){
+
+    if(qty===0.25){
+      return "250 gm";
+    }
+
+    if(qty===0.5){
+      return "500 gm";
+    }
+
+    return qty+" kg";
+
+  }
+
+
+  return qty+" "+veg.unit;
+
+}
+
+
+/* ORDER */
 
 function placeOrder(){
 
-  const selected = [];
-
-  let grandTotal = 0;
+  let orderLines=[];
+  let grandTotal=0;
 
 
   vegetables.forEach((veg,index)=>{
 
-    const input =
+    const select=
     document.getElementById("q"+index);
 
 
-    if(!input){
+    if(!select){
       return;
     }
 
 
-    let quantity =
-    parseFloat(input.value) || 0;
+    const qty=
+    Number(select.value)||0;
 
 
-    if(quantity > veg.stock){
+    if(qty>0){
 
-      quantity = veg.stock;
-
-      input.value = veg.stock;
-
-    }
+      const amount=
+      qty*veg.price;
 
 
-    if(quantity > 0){
-
-      const amount =
-      quantity * veg.price;
+      grandTotal+=amount;
 
 
-      grandTotal += amount;
+      orderLines.push(
 
-
-      selected.push(
-
-        "• " +
-        veg.name +
-        " - " +
-        quantity +
-        " " +
-        veg.unit +
-        " × ₹" +
-        veg.price +
-        " = ₹" +
+        "• "+
+        veg.name+
+        " - "+
+        quantityLabel(veg,qty)+
+        " × ₹"+
+        veg.price+
+        "/"+
+        veg.unit+
+        " = ₹"+
         formatMoney(amount)
 
       );
@@ -606,38 +729,38 @@ function placeOrder(){
   });
 
 
-  if(selected.length === 0){
+  if(orderLines.length===0){
 
     alert(
-      "ઓછામાં ઓછી એક શાકભાજીની Quantity લખો."
+      "ઓછામાં ઓછી એક શાકભાજીની Quantity પસંદ કરો."
     );
 
     return;
   }
 
 
-  const customerName =
+  const name=
   document
   .getElementById("name")
   .value
   .trim();
 
 
-  const address =
+  const address=
   document
   .getElementById("address")
   .value
   .trim();
 
 
-  const note =
+  const note=
   document
   .getElementById("note")
   .value
   .trim();
 
 
-  if(!customerName){
+  if(!name){
 
     alert(
       "કૃપા કરીને તમારું નામ લખો."
@@ -657,47 +780,39 @@ function placeOrder(){
   }
 
 
-  const message =
+  const message=
 
-  "🌿 *Radheeka Vegetable Order* 🌿\n\n" +
+  "🌿 *Radheeka Vegetable Order* 🌿\n\n"+
 
-  selected.join("\n") +
+  orderLines.join("\n")+
 
-  "\n\n💰 *કુલ રકમ: ₹" +
-  formatMoney(grandTotal) +
-  "*" +
+  "\n\n💰 *કુલ રકમ: ₹"+
+  formatMoney(grandTotal)+
+  "*"+
 
-  "\n\n👤 નામ: " +
-  customerName +
+  "\n\n👤 નામ: "+
+  name+
 
-  "\n📍 સરનામું: " +
-  address +
+  "\n📍 સરનામું: "+
+  address+
 
-  "\n📝 નોંધ: " +
+  "\n📝 નોંધ: "+
   (note || "-");
 
 
-  const whatsappNumber =
+  const whatsappNumber=
   "918758884244";
 
 
-  const whatsappURL =
+  window.location.href=
 
-  "https://wa.me/" +
-  whatsappNumber +
-  "?text=" +
+  "https://wa.me/"+
+  whatsappNumber+
+  "?text="+
   encodeURIComponent(message);
-
-
-  window.location.href =
-  whatsappURL;
 
 }
 
-
-/* =========================================
-   BUTTON
-========================================= */
 
 orderButton.addEventListener(
   "click",
