@@ -1,1 +1,1210 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<title>Radheeka Vegetables - Admin</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f4f8f3;
+  color:#183c23;
+}
+
+header{
+  background:#216b36;
+  color:white;
+  text-align:center;
+  padding:22px 15px;
+}
+
+header h1{
+  margin:0;
+  font-size:26px;
+}
+
+header p{
+  margin:7px 0 0;
+}
+
+.container{
+  max-width:1050px;
+  margin:auto;
+  padding:15px;
+}
+
+.dashboard{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:12px;
+  margin:15px 0;
+}
+
+.card{
+  background:white;
+  padding:17px;
+  border-radius:12px;
+  box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.card-title{
+  font-size:14px;
+  color:#666;
+  margin-bottom:8px;
+}
+
+.card-value{
+  font-size:24px;
+  font-weight:bold;
+  color:#216b36;
+}
+
+.panel{
+  background:white;
+  padding:18px;
+  border-radius:12px;
+  margin-bottom:18px;
+  box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.panel h2{
+  margin-top:0;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+  gap:10px;
+}
+
+input,select,button{
+  width:100%;
+  padding:12px;
+  border-radius:8px;
+  font-size:15px;
+}
+
+input,select{
+  border:1px solid #ccc;
+  background:white;
+}
+
+button{
+  border:none;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.save-btn{
+  background:#216b36;
+  color:white;
+  margin-top:12px;
+}
+
+.sale-btn{
+  background:#ef8a1f;
+  color:white;
+  margin-top:12px;
+}
+
+.edit-btn{
+  background:#1976d2;
+  color:white;
+  padding:8px;
+}
+
+.delete-btn{
+  background:#d43b32;
+  color:white;
+  padding:8px;
+}
+
+.message{
+  display:none;
+  margin-top:12px;
+  padding:10px;
+  border-radius:8px;
+  font-weight:bold;
+}
+
+.success{
+  background:#dff3e3;
+  color:#145b27;
+}
+
+.error{
+  background:#fde1df;
+  color:#9d211a;
+}
+
+.sale-info{
+  background:#f5faf5;
+  padding:14px;
+  border-radius:9px;
+  margin-top:12px;
+  line-height:1.8;
+}
+
+.table-wrap{
+  overflow-x:auto;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:700px;
+}
+
+th{
+  background:#216b36;
+  color:white;
+  padding:11px;
+  text-align:left;
+}
+
+td{
+  padding:11px;
+  border-bottom:1px solid #ddd;
+}
+
+.actions{
+  display:flex;
+  gap:5px;
+}
+
+.stock-ok{
+  color:#168038;
+  font-weight:bold;
+}
+
+.stock-zero{
+  color:#d32f2f;
+  font-weight:bold;
+}
+
+footer{
+  text-align:center;
+  padding:20px;
+  color:#666;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🌿 Radheeka Vegetables</h1>
+  <p>Admin Dashboard</p>
+</header>
+
+<div class="container">
+
+  <div class="dashboard">
+
+    <div class="card">
+      <div class="card-title">Total Vegetables</div>
+      <div class="card-value" id="totalVegetables">0</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Total Stock</div>
+      <div class="card-value" id="totalStock">0</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Available Items</div>
+      <div class="card-value" id="availableItems">0</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Out of Stock</div>
+      <div class="card-value" id="outItems">0</div>
+    </div>
+
+  </div>
+
+
+  <div class="panel">
+
+    <h2>➕ Vegetable Add / Update</h2>
+
+    <div class="grid">
+
+      <input
+        type="text"
+        id="vegKey"
+        placeholder="ID: bhinda"
+      >
+
+      <input
+        type="text"
+        id="vegName"
+        placeholder="નામ: ભીંડા"
+      >
+
+      <input
+        type="number"
+        id="vegPrice"
+        placeholder="Price"
+        min="0"
+        step="0.01"
+      >
+
+      <input
+        type="number"
+        id="vegStock"
+        placeholder="Stock"
+        min="0"
+        step="0.01"
+      >
+
+      <select id="vegUnit">
+        <option value="kg">kg</option>
+        <option value="gm">gm</option>
+        <option value="pudi">પુડી</option>
+      </select>
+
+    </div>
+
+    <button
+      class="save-btn"
+      onclick="saveVegetable()">
+      Save / Update Vegetable
+    </button>
+
+    <div
+      id="saveMessage"
+      class="message">
+    </div>
+
+  </div>
+
+
+  <div class="panel">
+
+    <h2>🛒 Stock Minus / Sale</h2>
+
+    <div class="grid">
+
+      <select id="saleVegetable">
+        <option value="">Vegetable પસંદ કરો</option>
+      </select>
+
+      <select id="saleQuantity">
+        <option value="">Quantity પસંદ કરો</option>
+      </select>
+
+    </div>
+
+    <div class="sale-info">
+
+      હાલનો Stock:
+      <strong id="currentSaleStock">--</strong>
+
+      <br>
+
+      Sale પછી Stock:
+      <strong id="afterSaleStock">--</strong>
+
+    </div>
+
+    <button
+      class="sale-btn"
+      onclick="minusStock()">
+      ➖ Sale Confirm / Stock Minus
+    </button>
+
+    <div
+      id="saleMessage"
+      class="message">
+    </div>
+
+  </div>
+
+
+  <div class="panel">
+
+    <h2>🥬 Current Vegetable Stock</h2>
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Vegetable</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody id="vegetableTable">
+          <tr>
+            <td colspan="5">Loading...</td>
+          </tr>
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+  Radheeka Organic & Ayurveda
+</footer>
+
+
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+
+<script>
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBeS7ijDjrATL5SYG-e0HyirkuavZEJYYA",
+  authDomain: "radheeka-vegetables.firebaseapp.com",
+  databaseURL: "https://radheeka-vegetables-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "radheeka-vegetables",
+  storageBucket: "radheeka-vegetables.firebasestorage.app",
+  messagingSenderId: "562547454524",
+  appId: "1:562547454524:web:d961ccc00e736655220939"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const database = firebase.database();
+const vegetablesRef = database.ref("vegetables");
+
+let vegetables = {};
+
+
+/* DATABASE LIVE LOAD */
+
+vegetablesRef.on("value", function(snapshot){
+
+  vegetables = snapshot.val() || {};
+
+  renderVegetables();
+
+}, function(error){
+
+  showMessage(
+    "saveMessage",
+    "Database Error: " + error.message,
+    false
+  );
+
+});
+
+
+/* UNIT NAME */
+
+function getUnit(unit){
+
+  if(unit === "pudi"){
+    return "પુડી";
+  }
+
+  if(unit === "gm"){
+    return "gm";
+  }
+
+  return "kg";
+}
+
+
+/* RENDER */
+
+function renderVegetables(){
+
+  const table = document.getElementById("vegetableTable");
+  const saleSelect = document.getElementById("saleVegetable");
+
+  table.innerHTML = "";
+
+  saleSelect.innerHTML =
+    '<option value="">Vegetable પસંદ કરો</option>';
+
+  const keys = Object.keys(vegetables);
+
+  let available = 0;
+  let out = 0;
+
+  let kgStock = 0;
+  let gmStock = 0;
+  let pudiStock = 0;
+
+
+  if(keys.length === 0){
+
+    table.innerHTML =
+      '<tr><td colspan="5">કોઈ Vegetable નથી.</td></tr>';
+
+  }
+
+
+  keys.forEach(function(key){
+
+    const item = vegetables[key] || {};
+
+    const name = item.name || key;
+    const price = Number(item.price) || 0;
+    const stock = Number(item.stock) || 0;
+    const unit = item.unit || "kg";
+
+
+    if(stock > 0){
+      available++;
+    }else{
+      out++;
+    }
+
+
+    if(unit === "gm"){
+
+      gmStock += stock;
+
+    }else if(unit === "pudi"){
+
+      pudiStock += stock;
+
+    }else{
+
+      kgStock += stock;
+
+    }
+
+
+    const row = document.createElement("tr");
+
+
+    const nameCell = document.createElement("td");
+
+    const strong = document.createElement("strong");
+    strong.textContent = name;
+
+    const br = document.createElement("br");
+
+    const small = document.createElement("small");
+    small.textContent = key;
+
+    nameCell.appendChild(strong);
+    nameCell.appendChild(br);
+    nameCell.appendChild(small);
+
+
+    const priceCell = document.createElement("td");
+
+    priceCell.textContent =
+      "₹" +
+      formatNumber(price) +
+      "/" +
+      getUnit(unit);
+
+
+    const stockCell = document.createElement("td");
+
+    stockCell.textContent =
+      formatNumber(stock) +
+      " " +
+      getUnit(unit);
+
+    stockCell.className =
+      stock > 0
+      ? "stock-ok"
+      : "stock-zero";
+
+
+    const statusCell = document.createElement("td");
+
+    statusCell.textContent =
+      stock > 0
+      ? "Available"
+      : "Out of Stock";
+
+
+    const actionCell = document.createElement("td");
+
+    const actionBox = document.createElement("div");
+    actionBox.className = "actions";
+
+
+    const editButton = document.createElement("button");
+
+    editButton.className = "edit-btn";
+    editButton.textContent = "Edit";
+
+    editButton.addEventListener("click", function(){
+      editVegetable(key);
+    });
+
+
+    const deleteButton = document.createElement("button");
+
+    deleteButton.className = "delete-btn";
+    deleteButton.textContent = "Delete";
+
+    deleteButton.addEventListener("click", function(){
+      deleteVegetable(key);
+    });
+
+
+    actionBox.appendChild(editButton);
+    actionBox.appendChild(deleteButton);
+
+    actionCell.appendChild(actionBox);
+
+
+    row.appendChild(nameCell);
+    row.appendChild(priceCell);
+    row.appendChild(stockCell);
+    row.appendChild(statusCell);
+    row.appendChild(actionCell);
+
+    table.appendChild(row);
+
+
+    const option = document.createElement("option");
+
+    option.value = key;
+
+    option.textContent =
+      name +
+      " (" +
+      formatNumber(stock) +
+      " " +
+      getUnit(unit) +
+      ")";
+
+    saleSelect.appendChild(option);
+
+  });
+
+
+  document.getElementById("totalVegetables").textContent =
+    keys.length;
+
+  document.getElementById("availableItems").textContent =
+    available;
+
+  document.getElementById("outItems").textContent =
+    out;
+
+
+  let totalText = [];
+
+  if(kgStock > 0){
+    totalText.push(formatNumber(kgStock) + " kg");
+  }
+
+  if(gmStock > 0){
+    totalText.push(formatNumber(gmStock) + " gm");
+  }
+
+  if(pudiStock > 0){
+    totalText.push(formatNumber(pudiStock) + " પુડી");
+  }
+
+  if(totalText.length === 0){
+    totalText.push("0");
+  }
+
+
+  document.getElementById("totalStock").innerHTML =
+    totalText.join("<br>");
+
+}
+
+
+/* SAVE / UPDATE */
+
+async function saveVegetable(){
+
+  let key =
+    document.getElementById("vegKey")
+    .value
+    .trim()
+    .toLowerCase();
+
+  key = key.replace(/\s+/g, "-");
+
+
+  const name =
+    document.getElementById("vegName")
+    .value
+    .trim();
+
+
+  const price =
+    Number(
+      document.getElementById("vegPrice").value
+    );
+
+
+  const stock =
+    Number(
+      document.getElementById("vegStock").value
+    );
+
+
+  const unit =
+    document.getElementById("vegUnit").value;
+
+
+  if(!key){
+
+    showMessage(
+      "saveMessage",
+      "Vegetable ID લખો.",
+      false
+    );
+
+    return;
+  }
+
+
+  if(!name){
+
+    showMessage(
+      "saveMessage",
+      "Vegetable નામ લખો.",
+      false
+    );
+
+    return;
+  }
+
+
+  if(!Number.isFinite(price) || price < 0){
+
+    showMessage(
+      "saveMessage",
+      "સાચો Price લખો.",
+      false
+    );
+
+    return;
+  }
+
+
+  if(!Number.isFinite(stock) || stock < 0){
+
+    showMessage(
+      "saveMessage",
+      "સાચો Stock લખો.",
+      false
+    );
+
+    return;
+  }
+
+
+  try{
+
+    await database
+    .ref("vegetables/" + key)
+    .set({
+      name: name,
+      price: roundNumber(price),
+      stock: roundNumber(stock),
+      unit: unit
+    });
+
+
+    showMessage(
+      "saveMessage",
+      "✅ Vegetable successfully saved.",
+      true
+    );
+
+
+    clearForm();
+
+  }catch(error){
+
+    showMessage(
+      "saveMessage",
+      "❌ Error: " + error.message,
+      false
+    );
+
+  }
+
+}
+
+
+/* EDIT */
+
+function editVegetable(key){
+
+  const item = vegetables[key];
+
+  if(!item){
+    return;
+  }
+
+
+  document.getElementById("vegKey").value =
+    key;
+
+  document.getElementById("vegName").value =
+    item.name || "";
+
+  document.getElementById("vegPrice").value =
+    item.price !== undefined ? item.price : "";
+
+  document.getElementById("vegStock").value =
+    item.stock !== undefined ? item.stock : "";
+
+  document.getElementById("vegUnit").value =
+    item.unit || "kg";
+
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+}
+
+
+/* DELETE */
+
+async function deleteVegetable(key){
+
+  const item = vegetables[key];
+
+  const name =
+    item && item.name
+    ? item.name
+    : key;
+
+
+  const ok =
+    confirm(
+      name + " delete કરવું છે?"
+    );
+
+
+  if(!ok){
+    return;
+  }
+
+
+  try{
+
+    await database
+    .ref("vegetables/" + key)
+    .remove();
+
+  }catch(error){
+
+    alert(
+      "Delete Error: " +
+      error.message
+    );
+
+  }
+
+}
+
+
+/* SALE SELECT EVENTS */
+
+document
+.getElementById("saleVegetable")
+.addEventListener(
+  "change",
+  updateSaleOptions
+);
+
+
+document
+.getElementById("saleQuantity")
+.addEventListener(
+  "change",
+  updateSalePreview
+);
+
+
+/* SALE OPTIONS */
+
+function updateSaleOptions(){
+
+  const key =
+    document.getElementById("saleVegetable").value;
+
+  const quantitySelect =
+    document.getElementById("saleQuantity");
+
+
+  quantitySelect.innerHTML =
+    '<option value="">Quantity પસંદ કરો</option>';
+
+
+  if(!key || !vegetables[key]){
+
+    updateSalePreview();
+    return;
+
+  }
+
+
+  const item = vegetables[key];
+
+  const stock = Number(item.stock) || 0;
+
+  const unit = item.unit || "kg";
+
+
+  let options = [];
+
+
+  if(unit === "kg"){
+
+    options = [
+      [0.25, "250 gm"],
+      [0.50, "500 gm"],
+      [0.75, "750 gm / પોણો kg"],
+      [1, "1 kg"],
+      [1.5, "1.5 kg"],
+      [2, "2 kg"],
+      [2.5, "2.5 kg"],
+      [3, "3 kg"],
+      [4, "4 kg"],
+      [5, "5 kg"],
+      [10, "10 kg"]
+    ];
+
+  }else if(unit === "gm"){
+
+    options = [
+      [50, "50 gm"],
+      [100, "100 gm"],
+      [250, "250 gm"],
+      [500, "500 gm"],
+      [750, "750 gm"],
+      [1000, "1000 gm"]
+    ];
+
+  }else if(unit === "pudi"){
+
+    options = [
+      [1, "1 પુડી"],
+      [2, "2 પુડી"],
+      [3, "3 પુડી"],
+      [4, "4 પુડી"],
+      [5, "5 પુડી"],
+      [6, "6 પુડી"],
+      [7, "7 પુડી"],
+      [8, "8 પુડી"],
+      [9, "9 પુડી"],
+      [10, "10 પુડી"]
+    ];
+
+  }
+
+
+  options.forEach(function(data){
+
+    const value = data[0];
+    const label = data[1];
+
+
+    if(value <= stock){
+
+      const option =
+        document.createElement("option");
+
+      option.value = value;
+      option.textContent = label;
+
+      quantitySelect.appendChild(option);
+
+    }
+
+  });
+
+
+  updateSalePreview();
+
+}
+
+
+/* SALE PREVIEW */
+
+function updateSalePreview(){
+
+  const key =
+    document.getElementById("saleVegetable").value;
+
+
+  const quantity =
+    Number(
+      document.getElementById("saleQuantity").value
+    );
+
+
+  const current =
+    document.getElementById("currentSaleStock");
+
+  const after =
+    document.getElementById("afterSaleStock");
+
+
+  if(!key || !vegetables[key]){
+
+    current.textContent = "--";
+    after.textContent = "--";
+
+    return;
+
+  }
+
+
+  const item = vegetables[key];
+
+  const stock = Number(item.stock) || 0;
+
+  const unit = item.unit || "kg";
+
+
+  current.textContent =
+    formatNumber(stock) +
+    " " +
+    getUnit(unit);
+
+
+  if(!quantity || quantity <= 0){
+
+    after.textContent = "--";
+    return;
+
+  }
+
+
+  const remaining =
+    roundNumber(stock - quantity);
+
+
+  after.textContent =
+    formatNumber(
+      Math.max(0, remaining)
+    ) +
+    " " +
+    getUnit(unit);
+
+}
+
+
+/* MINUS STOCK */
+
+async function minusStock(){
+
+  const key =
+    document.getElementById("saleVegetable").value;
+
+
+  const quantity =
+    Number(
+      document.getElementById("saleQuantity").value
+    );
+
+
+  if(!key){
+
+    showMessage(
+      "saleMessage",
+      "Vegetable પસંદ કરો.",
+      false
+    );
+
+    return;
+  }
+
+
+  if(!quantity || quantity <= 0){
+
+    showMessage(
+      "saleMessage",
+      "Quantity પસંદ કરો.",
+      false
+    );
+
+    return;
+  }
+
+
+  const item = vegetables[key];
+
+  const unit = item.unit || "kg";
+
+
+  const stockRef =
+    database.ref(
+      "vegetables/" +
+      key +
+      "/stock"
+    );
+
+
+  try{
+
+    const result =
+      await stockRef.transaction(
+        function(currentStock){
+
+          if(
+            currentStock === null ||
+            currentStock === undefined
+          ){
+            return;
+          }
+
+
+          const current =
+            Number(currentStock);
+
+
+          if(!Number.isFinite(current)){
+            return;
+          }
+
+
+          if(current < quantity){
+            return;
+          }
+
+
+          return roundNumber(
+            current - quantity
+          );
+
+        }
+      );
+
+
+    if(!result.committed){
+
+      showMessage(
+        "saleMessage",
+        "❌ Stock પૂરતો નથી.",
+        false
+      );
+
+      return;
+    }
+
+
+    const newStock =
+      Number(result.snapshot.val());
+
+
+    showMessage(
+      "saleMessage",
+      "✅ Stock update થયો. બાકી: " +
+      formatNumber(newStock) +
+      " " +
+      getUnit(unit),
+      true
+    );
+
+
+    document.getElementById("saleQuantity").value = "";
+
+    document.getElementById("afterSaleStock").textContent = "--";
+
+
+  }catch(error){
+
+    showMessage(
+      "saleMessage",
+      "❌ Database Error: " +
+      error.message,
+      false
+    );
+
+  }
+
+}
+
+
+/* CLEAR FORM */
+
+function clearForm(){
+
+  document.getElementById("vegKey").value = "";
+  document.getElementById("vegName").value = "";
+  document.getElementById("vegPrice").value = "";
+  document.getElementById("vegStock").value = "";
+  document.getElementById("vegUnit").value = "kg";
+
+}
+
+
+/* MESSAGE */
+
+function showMessage(id,text,isSuccess){
+
+  const box =
+    document.getElementById(id);
+
+  box.textContent = text;
+
+  box.className =
+    "message " +
+    (isSuccess ? "success" : "error");
+
+  box.style.display = "block";
+
+
+  setTimeout(function(){
+
+    box.style.display = "none";
+
+  },4000);
+
+}
+
+
+/* ROUND NUMBER */
+
+function roundNumber(value){
+
+  return Math.round(
+    Number(value) * 1000
+  ) / 1000;
+
+}
+
+
+/* FORMAT NUMBER */
+
+function formatNumber(value){
+
+  const number =
+    Number(value);
+
+  if(!Number.isFinite(number)){
+    return "0";
+  }
+
+  return parseFloat(
+    number.toFixed(3)
+  ).toString();
+
+}
+
+</script>
+
+</body>
+</html>
