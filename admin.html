@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Radheeka Admin Dashboard</title>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#f3f9f2;
+    color:#183c23;
+}
+
+header{
+    background:linear-gradient(135deg,#1f6b35,#318348);
+    color:white;
+    text-align:center;
+    padding:22px 15px;
+}
+
+header h1{
+    margin:0;
+    font-size:26px;
+}
+
+header p{
+    margin:7px 0 0;
+    font-size:14px;
+}
+
+.container{
+    max-width:1000px;
+    margin:auto;
+    padding:18px;
+}
+
+.dashboard{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+    margin-bottom:20px;
+}
+
+.card{
+    background:white;
+    padding:18px;
+    border-radius:14px;
+    box-shadow:0 3px 12px rgba(0,0,0,.08);
+    text-align:center;
+}
+
+.card h3{
+    margin:0 0 8px;
+    font-size:14px;
+    color:#5d6d61;
+}
+
+.card .number{
+    font-size:26px;
+    font-weight:bold;
+    color:#1f6b35;
+}
+
+.form-box{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 3px 12px rgba(0,0,0,.08);
+    margin-bottom:20px;
+}
+
+.form-box h2{
+    margin-top:0;
+    font-size:20px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:2fr 1fr 1fr 1fr;
+    gap:12px;
+}
+
+label{
+    display:block;
+    font-size:13px;
+    font-weight:bold;
+    margin-bottom:6px;
+}
+
+input,select{
+    width:100%;
+    padding:12px;
+    border:1px solid #ccd8ce;
+    border-radius:9px;
+    font-size:16px;
+    outline:none;
+}
+
+input:focus,select:focus{
+    border-color:#318348;
+}
+
+.buttons{
+    display:flex;
+    gap:10px;
+    margin-top:15px;
+}
+
+button{
+    border:none;
+    padding:12px 18px;
+    border-radius:9px;
+    cursor:pointer;
+    font-size:15px;
+    font-weight:bold;
+}
+
+.save-btn{
+    background:#1f6b35;
+    color:white;
+}
+
+.cancel-btn{
+    background:#e8ece9;
+    color:#333;
+    display:none;
+}
+
+.stock-box{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 3px 12px rgba(0,0,0,.08);
+}
+
+.stock-title{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
+}
+
+.stock-title h2{
+    margin:0;
+    font-size:20px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    background:#eef6ef;
+    padding:12px 8px;
+    text-align:left;
+    font-size:14px;
+}
+
+td{
+    padding:12px 8px;
+    border-bottom:1px solid #eee;
+}
+
+.status{
+    display:inline-block;
+    padding:5px 9px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.available{
+    background:#dff3e3;
+    color:#17662c;
+}
+
+.out{
+    background:#ffe1e1;
+    color:#a51e1e;
+}
+
+.action-btn{
+    padding:7px 10px;
+    font-size:12px;
+    margin:2px;
+}
+
+.edit-btn{
+    background:#e4f0ff;
+    color:#14549a;
+}
+
+.delete-btn{
+    background:#ffe5e5;
+    color:#a61f1f;
+}
+
+.empty{
+    text-align:center;
+    padding:30px;
+    color:#777;
+}
+
+.note{
+    background:#fff8d9;
+    border-left:4px solid #e1b800;
+    padding:12px;
+    margin-top:15px;
+    border-radius:8px;
+    font-size:13px;
+}
+
+@media(max-width:700px){
+
+    .dashboard{
+        grid-template-columns:1fr;
+    }
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .stock-box{
+        overflow-x:auto;
+    }
+
+    table{
+        min-width:650px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🌿 Radheeka Admin Dashboard</h1>
+    <p>Vegetable Stock & Price Management</p>
+</header>
+
+<div class="container">
+
+    <!-- Dashboard Cards -->
+
+    <div class="dashboard">
+
+        <div class="card">
+            <h3>Total Vegetables</h3>
+            <div class="number" id="totalVegetables">0</div>
+        </div>
+
+        <div class="card">
+            <h3>Available</h3>
+            <div class="number" id="availableVegetables">0</div>
+        </div>
+
+        <div class="card">
+            <h3>Out of Stock</h3>
+            <div class="number" id="outVegetables">0</div>
+        </div>
+
+    </div>
+
+
+    <!-- Add Vegetable -->
+
+    <div class="form-box">
+
+        <h2 id="formTitle">➕ Vegetable Add કરો</h2>
+
+        <div class="form-grid">
+
+            <div>
+                <label>Vegetable Name</label>
+
+                <input
+                    type="text"
+                    id="vegName"
+                    placeholder="જેમ કે Methi, Bhinda, Palak"
+                >
+            </div>
+
+
+            <div>
+                <label>Stock Quantity</label>
+
+                <input
+                    type="number"
+                    id="vegQty"
+                    min="0"
+                    step="0.01"
+                    placeholder="10"
+                >
+            </div>
+
+
+            <div>
+                <label>Unit</label>
+
+                <select id="vegUnit">
+                    <option value="kg">kg</option>
+                    <option value="poni">પોની</option>
+                </select>
+            </div>
+
+
+            <div>
+                <label>Price ₹ / Unit</label>
+
+                <input
+                    type="number"
+                    id="vegPrice"
+                    min="0"
+                    step="0.01"
+                    placeholder="120"
+                >
+            </div>
+
+        </div>
+
+
+        <div class="buttons">
+
+            <button
+                class="save-btn"
+                onclick="saveVegetable()"
+                id="saveButton"
+            >
+                Save Vegetable
+            </button>
+
+            <button
+                class="cancel-btn"
+                onclick="cancelEdit()"
+                id="cancelButton"
+            >
+                Cancel
+            </button>
+
+        </div>
+
+        <div class="note">
+            Methi, Palak, Dhana માટે Unit = <b>પોની</b> પસંદ કરી શકો.
+            Bhinda, Choli, Dudhi વગેરે માટે Unit = <b>kg</b> રાખી શકો.
+        </div>
+
+    </div>
+
+
+    <!-- Stock List -->
+
+    <div class="stock-box">
+
+        <div class="stock-title">
+            <h2>📦 Current Stock</h2>
+        </div>
+
+        <div id="stockArea"></div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const STORAGE_KEY = "radheekaVegetableStock";
+
+let vegetables = [];
+
+let editingId = null;
+
+
+/* LOAD DATA */
+
+function loadVegetables(){
+
+    try{
+
+        const saved =
+            localStorage.getItem(STORAGE_KEY);
+
+        if(saved){
+
+            vegetables =
+                JSON.parse(saved);
+
+        }
+
+    }catch(error){
+
+        vegetables = [];
+
+    }
+
+    renderVegetables();
+
+}
+
+
+/* SAVE DATA */
+
+function saveData(){
+
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(vegetables)
+    );
+
+}
+
+
+/* ADD / UPDATE VEGETABLE */
+
+function saveVegetable(){
+
+    const name =
+        document.getElementById("vegName")
+        .value.trim();
+
+    const qty =
+        parseFloat(
+            document.getElementById("vegQty")
+            .value
+        );
+
+    const unit =
+        document.getElementById("vegUnit")
+        .value;
+
+    const price =
+        parseFloat(
+            document.getElementById("vegPrice")
+            .value
+        );
+
+
+    if(!name){
+
+        alert("Vegetable name નાખો.");
+        return;
+
+    }
+
+
+    if(isNaN(qty) || qty < 0){
+
+        alert("સાચી stock quantity નાખો.");
+        return;
+
+    }
+
+
+    if(isNaN(price) || price < 0){
+
+        alert("સાચો price નાખો.");
+        return;
+
+    }
+
+
+    if(editingId !== null){
+
+        const index =
+            vegetables.findIndex(
+                item => item.id === editingId
+            );
+
+
+        if(index !== -1){
+
+            vegetables[index].name = name;
+
+            vegetables[index].qty = qty;
+
+            vegetables[index].unit = unit;
+
+            vegetables[index].price = price;
+
+        }
+
+    }
+
+    else{
+
+        const vegetable = {
+
+            id: Date.now(),
+
+            name: name,
+
+            qty: qty,
+
+            unit: unit,
+
+            price: price,
+
+            createdAt:
+                new Date().toISOString()
+
+        };
+
+
+        vegetables.push(vegetable);
+
+    }
+
+
+    saveData();
+
+    clearForm();
+
+    renderVegetables();
+
+}
+
+
+/* DISPLAY STOCK */
+
+function renderVegetables(){
+
+    const area =
+        document.getElementById("stockArea");
+
+
+    if(vegetables.length === 0){
+
+        area.innerHTML = `
+            <div class="empty">
+                હજી કોઈ vegetable add કરેલ નથી.
+            </div>
+        `;
+
+        updateDashboard();
+
+        return;
+
+    }
+
+
+    let html = `
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Vegetable</th>
+
+                    <th>Stock</th>
+
+                    <th>Price</th>
+
+                    <th>Status</th>
+
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+    `;
+
+
+    vegetables.forEach(item => {
+
+        const status =
+            item.qty > 0
+            ? `
+                <span class="status available">
+                    Available
+                </span>
+              `
+            : `
+                <span class="status out">
+                    Out of Stock
+                </span>
+              `;
+
+
+        const unitText =
+            item.unit === "poni"
+            ? "પોની"
+            : "kg";
+
+
+        html += `
+
+            <tr>
+
+                <td>
+                    <b>${escapeHTML(item.name)}</b>
+                </td>
+
+                <td>
+                    ${formatNumber(item.qty)}
+                    ${unitText}
+                </td>
+
+                <td>
+                    ₹${formatNumber(item.price)}
+                    / ${unitText}
+                </td>
+
+                <td>
+                    ${status}
+                </td>
+
+                <td>
+
+                    <button
+                        class="action-btn edit-btn"
+                        onclick="editVegetable(${item.id})"
+                    >
+                        Edit
+                    </button>
+
+                    <button
+                        class="action-btn delete-btn"
+                        onclick="deleteVegetable(${item.id})"
+                    >
+                        Delete
+                    </button>
+
+                </td>
+
+            </tr>
+
+        `;
+
+    });
+
+
+    html += `
+
+            </tbody>
+
+        </table>
+
+    `;
+
+
+    area.innerHTML = html;
+
+    updateDashboard();
+
+}
+
+
+/* EDIT */
+
+function editVegetable(id){
+
+    const item =
+        vegetables.find(
+            veg => veg.id === id
+        );
+
+
+    if(!item){
+        return;
+    }
+
+
+    editingId = id;
+
+
+    document.getElementById("vegName")
+        .value = item.name;
+
+
+    document.getElementById("vegQty")
+        .value = item.qty;
+
+
+    document.getElementById("vegUnit")
+        .value = item.unit;
+
+
+    document.getElementById("vegPrice")
+        .value = item.price;
+
+
+    document.getElementById("formTitle")
+        .innerText =
+        "✏️ Vegetable Update કરો";
+
+
+    document.getElementById("saveButton")
+        .innerText =
+        "Update Vegetable";
+
+
+    document.getElementById("cancelButton")
+        .style.display =
+        "inline-block";
+
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+}
+
+
+/* CANCEL EDIT */
+
+function cancelEdit(){
+
+    clearForm();
+
+}
+
+
+/* DELETE */
+
+function deleteVegetable(id){
+
+    const item =
+        vegetables.find(
+            veg => veg.id === id
+        );
+
+
+    if(!item){
+        return;
+    }
+
+
+    const confirmDelete =
+        confirm(
+            item.name +
+            " delete કરવું છે?"
+        );
+
+
+    if(!confirmDelete){
+        return;
+    }
+
+
+    vegetables =
+        vegetables.filter(
+            veg => veg.id !== id
+        );
+
+
+    saveData();
+
+    renderVegetables();
+
+}
+
+
+/* CLEAR FORM */
+
+function clearForm(){
+
+    editingId = null;
+
+
+    document.getElementById("vegName")
+        .value = "";
+
+
+    document.getElementById("vegQty")
+        .value = "";
+
+
+    document.getElementById("vegUnit")
+        .value = "kg";
+
+
+    document.getElementById("vegPrice")
+        .value = "";
+
+
+    document.getElementById("formTitle")
+        .innerText =
+        "➕ Vegetable Add કરો";
+
+
+    document.getElementById("saveButton")
+        .innerText =
+        "Save Vegetable";
+
+
+    document.getElementById("cancelButton")
+        .style.display =
+        "none";
+
+}
+
+
+/* DASHBOARD */
+
+function updateDashboard(){
+
+    const total =
+        vegetables.length;
+
+
+    const available =
+        vegetables.filter(
+            item => item.qty > 0
+        ).length;
+
+
+    const out =
+        vegetables.filter(
+            item => item.qty <= 0
+        ).length;
+
+
+    document.getElementById(
+        "totalVegetables"
+    ).innerText = total;
+
+
+    document.getElementById(
+        "availableVegetables"
+    ).innerText = available;
+
+
+    document.getElementById(
+        "outVegetables"
+    ).innerText = out;
+
+}
+
+
+/* FORMAT NUMBER */
+
+function formatNumber(number){
+
+    if(
+        Number.isInteger(
+            Number(number)
+        )
+    ){
+
+        return Number(number);
+
+    }
+
+    return Number(number)
+        .toFixed(2)
+        .replace(/\.?0+$/,"");
+
+}
+
+
+/* SECURITY */
+
+function escapeHTML(text){
+
+    return String(text)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+/* START */
+
+loadVegetables();
+
+</script>
+
+</body>
+</html>
